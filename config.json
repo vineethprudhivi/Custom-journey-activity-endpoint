@@ -10,7 +10,7 @@
     "type": "REST",
     "lang": {
         "en-US": {
-            "name": "Sayan_JourneyCA",
+            "name": "Vineeth_test_api endpoint",
             "description": "An activity that helps you trigger a journey from another journey.",
             "step1Label": "Configure Activity"
         }
