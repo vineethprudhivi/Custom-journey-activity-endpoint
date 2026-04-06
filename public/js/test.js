@@ -74,10 +74,8 @@ function save() {
     payload.arguments.execute = payload.arguments.execute || {};
     payload.metaData = payload.metaData || {};
 
-    // Build inArguments with endpoint URL, journey context, and field mappings
-    payload.arguments.execute.inArguments = [{
-        endpointUrl: endpointUrl || null,
-        fieldMappings: selectedFields,
+    // Build inArguments with endpoint URL, field mappings, and selected journey context
+    var journeyTemplates = {
         journeyId: '{{Interaction.Id}}',
         journeyKey: '{{Interaction.Key}}',
         journeyName: '{{Interaction.Name}}',
@@ -86,7 +84,23 @@ function save() {
         activityName: '{{Activity.Name}}',
         definitionInstanceId: '{{DefinitionInstance.Id}}',
         activityInstanceId: '{{ActivityInstance.Id}}'
-    }];
+    };
+
+    var selectedJourneyFields = {};
+    $('.journey-checkbox:checked').each(function() {
+        var key = $(this).val();
+        if (journeyTemplates[key]) {
+            selectedJourneyFields[key] = journeyTemplates[key];
+        }
+    });
+
+    var inArgs = {
+        endpointUrl: endpointUrl || null,
+        fieldMappings: selectedFields,
+        journeyContext: selectedJourneyFields
+    };
+
+    payload.arguments.execute.inArguments = [inArgs];
     
     payload.metaData.isConfigured = true;
     connection.trigger('updateActivity', payload);
@@ -114,6 +128,16 @@ function hydrateFromExistingPayload() {
             
             // Check if this field was previously selected
             if (args.fieldMappings.hasOwnProperty(fieldName)) {
+                $(this).prop('checked', true);
+            }
+        });
+    }
+
+    // Restore selected journey context fields
+    if (args.journeyContext && typeof args.journeyContext === 'object') {
+        $('.journey-checkbox').each(function() {
+            var key = $(this).val();
+            if (args.journeyContext.hasOwnProperty(key)) {
                 $(this).prop('checked', true);
             }
         });

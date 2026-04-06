@@ -49,17 +49,8 @@ exports.execute = async function (req, res) {
         const endpointUrl = (args.endpointUrl || process.env.ENDPOINT_URL || '').trim();
         const fieldMappings = (args.fieldMappings && typeof args.fieldMappings === 'object') ? args.fieldMappings : {};
 
-        // Extract journey context IDs (resolved by Journey Builder at runtime)
-        const journeyContext = {
-            journeyId: args.journeyId || null,
-            journeyKey: args.journeyKey || null,
-            journeyName: args.journeyName || null,
-            activityId: args.activityId || null,
-            activityKey: args.activityKey || null,
-            activityName: args.activityName || null,
-            definitionInstanceId: args.definitionInstanceId || null,
-            activityInstanceId: args.activityInstanceId || null
-        };
+        // Extract selected journey context fields (resolved by Journey Builder at runtime)
+        const journeyContext = (args.journeyContext && typeof args.journeyContext === 'object') ? args.journeyContext : {};
 
         console.log('Endpoint URL:', endpointUrl);
         console.log('Field Mappings:', JSON.stringify(fieldMappings, null, 2));
@@ -75,7 +66,7 @@ exports.execute = async function (req, res) {
             return res.status(200).json({ success: false, error: 'No fields selected' });
         }
 
-        // Merge field mappings with journey context and send to endpoint
+        // Merge field mappings with selected journey context and send to endpoint
         const endpointPayload = Object.assign({}, fieldMappings, journeyContext);
         await postToEndpoint(endpointUrl, endpointPayload);
 
