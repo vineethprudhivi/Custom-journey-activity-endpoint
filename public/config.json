@@ -18,7 +18,7 @@
     "arguments": {
         "execute": {
             "inArguments": [],
-            "url": "https://custom-journey-activity-endpoint.vercel.app/execute",
+            "url": "https://custom-journey-activity-endpointnew.vercel.app/execute",
             "verb": "POST",
             "body": "",
             "header": "",
@@ -30,22 +30,22 @@
     "configurationArguments": {
         "applicationExtensionKey": "432d1267-809d-480f-af6e-be77b46523cf",
         "save": {
-            "url": "https://custom-journey-activity-endpoint.vercel.app/save",
+            "url": "https://custom-journey-activity-endpointnew.vercel.app/save",
             "verb": "POST",
             "useJwt": false
         },
         "publish": {
-            "url": "https://custom-journey-activity-endpoint.vercel.app/publish",
+            "url": "https://custom-journey-activity-endpointnew.vercel.app/publish",
             "verb": "POST",
             "useJwt": false
         },
         "validate": {
-            "url": "https://custom-journey-activity-endpoint.vercel.app/validate",
+            "url": "https://custom-journey-activity-endpointnew.vercel.app/validate",
             "verb": "POST",
             "useJwt": false
         },
         "stop": {
-            "url": "https://custom-journey-activity-endpoint.vercel.app/stop",
+            "url": "https://custom-journey-activity-endpointnew.vercel.app/stop",
             "verb": "POST",
             "useJwt": false
         }
