@@ -1,6 +1,6 @@
 {
     "workflowApiVersion": "1.1",
-    "key":"af850a11-4c0f-4091-a25e-3e619f270701",
+    "key":"af850a11-4c0f-4091-a25e-3e619f270703",
     "metaData": {
         "icon": "images/icon.png",
         "iconSmall": "images/iconSmall.png",
@@ -28,7 +28,7 @@
         }
     },
     "configurationArguments": {
-        "applicationExtensionKey": "432d1267-809d-480f-af6e-be77b46523cf",
+        "applicationExtensionKey": "5f547f5d-cced-4efd-bd41-0fac1771a12b",
         "save": {
             "url": "https://custom-journey-activity-endpointnew.vercel.app/save",
             "verb": "POST",
