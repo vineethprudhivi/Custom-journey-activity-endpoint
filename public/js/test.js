@@ -74,46 +74,28 @@ function save() {
     payload.arguments.execute = payload.arguments.execute || {};
     payload.metaData = payload.metaData || {};
 
-    // Build inArguments with endpoint URL, field mappings, and selected journey context
-    var journeyTemplates = {
-        journeyId: '{{Interaction.Id}}',
-        journeyKey: '{{Interaction.Key}}',
-        journeyName: '{{Interaction.Name}}',
-        activityId: '{{Activity.Id}}',
-        activityKey: '{{Activity.Key}}',
-        activityName: '{{Activity.Name}}',
-        definitionInstanceId: '{{DefinitionInstance.Id}}',
-        activityInstanceId: '{{ActivityInstance.Id}}'
-    };
-
-    var selectedJourneyFields = {};
+    // Journey context fields (journeyId, activityId, etc.) are NOT valid
+    // data binding expressions in inArguments. SFMC sends them automatically
+    // in the top-level execute request body. We only store which ones the
+    // user selected so the server knows what to include in the endpoint payload.
+    var selectedJourneyKeys = [];
     $('.journey-checkbox:checked').each(function() {
-        var key = $(this).val();
-        if (journeyTemplates[key]) {
-            selectedJourneyFields[key] = journeyTemplates[key];
-        }
+        selectedJourneyKeys.push($(this).val());
     });
 
-    // SFMC requires flat key-value pairs in inArguments (no nested objects).
-    // Store each selected field and journey context field as a top-level key.
+    // Build flat inArguments — only DE field bindings are valid handlebars here.
     var inArgs = {
         endpointUrl: endpointUrl || null
     };
 
-    // Flatten field mappings directly into inArgs
+    // Flatten field mappings directly into inArgs (these are valid DE bindings)
     Object.keys(selectedFields).forEach(function(key) {
         inArgs[key] = selectedFields[key];
     });
 
-    // Flatten journey context fields directly into inArgs
-    Object.keys(selectedJourneyFields).forEach(function(key) {
-        inArgs[key] = selectedJourneyFields[key];
-    });
-
-    // Keep a metadata list of which keys are field mappings vs journey context
-    // so we can hydrate the UI later (stored as comma-separated strings, which are scalar)
+    // Store metadata as plain comma-separated strings (scalars, not objects)
     inArgs._fieldMappingKeys = Object.keys(selectedFields).join(',');
-    inArgs._journeyContextKeys = Object.keys(selectedJourneyFields).join(',');
+    inArgs._journeyContextKeys = selectedJourneyKeys.join(',');
 
     payload.arguments.execute.inArguments = [inArgs];
     

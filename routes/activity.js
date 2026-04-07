@@ -48,13 +48,33 @@ exports.execute = async function (req, res) {
 
         const endpointUrl = (args.endpointUrl || process.env.ENDPOINT_URL || '').trim();
 
-        // All fields are now flat top-level keys in inArguments.
-        // Internal metadata keys start with '_'; 'endpointUrl' is config. Everything else is payload data.
+        // Collect resolved DE field values from inArguments (skip internal metadata keys)
         const reservedKeys = ['endpointUrl', '_fieldMappingKeys', '_journeyContextKeys'];
         const endpointPayload = {};
         Object.keys(args).forEach(function(key) {
             if (reservedKeys.indexOf(key) === -1) {
                 endpointPayload[key] = args[key];
+            }
+        });
+
+        // Journey context fields are NOT in inArguments — SFMC sends them in the
+        // top-level request body automatically. Read which ones the user selected
+        // from the _journeyContextKeys metadata and pull values from req.body.
+        const journeyContextMap = {
+            journeyId: req.body.journeyId,
+            journeyKey: req.body.keyValue,
+            journeyName: req.body.journeyName,
+            activityId: req.body.activityId || req.body.activityObjectID,
+            activityKey: req.body.activityKey,
+            activityName: req.body.activityName,
+            definitionInstanceId: req.body.definitionInstanceId,
+            activityInstanceId: req.body.activityInstanceId
+        };
+
+        const selectedJourneyKeys = (args._journeyContextKeys || '').split(',').filter(Boolean);
+        selectedJourneyKeys.forEach(function(key) {
+            if (journeyContextMap[key] !== undefined && journeyContextMap[key] !== null) {
+                endpointPayload[key] = journeyContextMap[key];
             }
         });
 
